@@ -1,35 +1,32 @@
-import React from "react";
+import React, { Component } from 'react';
+
+import ReactDOM from 'react-dom';
 
 import './Home.css';
 
-import Header from '../../common/header/Header.js';
-
+import Details from '../details/Details';
+import Header from '../../common/header/Header';
 import { withStyles } from '@material-ui/core/styles';
-import moviesData from '../../common/moviesData.js';
+import moviesData from '../../common/moviesData';
 import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
 import GridListTileBar from '@material-ui/core/GridListTileBar';
-
+import genres from '../../common/genre';
+import artists from '../../common/artist';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import FormControl from '@material-ui/core/FormControl';
 import Typography from '@material-ui/core/Typography';
 import InputLabel from '@material-ui/core/InputLabel';
 import Input from '@material-ui/core/Input';
-
-import genres from '../../common/genre';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import Checkbox from '@material-ui/core/Checkbox';
 import ListItemText from '@material-ui/core/ListItemText';
-
-import artist from '../../common/artist';
-
 import TextField from '@material-ui/core/TextField';
-
 import Button from '@material-ui/core/Button';
-
 const styles = theme => ({
+    
     root: {
         flexGrow: 1,
         backgroundColor: theme.palette.background.paper
@@ -52,13 +49,13 @@ const styles = theme => ({
     formControl: {
         margin: theme.spacing.unit,
         minWidth: 240,
-        maxWidth: 240,
+        maxWidth: 240
     },
     title: {
         color: theme.palette.primary.light,
-    },
+    }
 });
-class Home extends React.Component{
+class Home extends Component {
     constructor() {
         super();
         this.state = {
@@ -75,6 +72,9 @@ class Home extends React.Component{
     }
     artistSelectHandler = event => {
         this.setState({ artists: event.target.value });
+    }
+    movieClickHandler = (movieId) => {
+        ReactDOM.render(<Details movieId={movieId} />, document.getElementById('root'));
     }
     render() {
         const { classes } = this.props;
@@ -96,7 +96,7 @@ class Home extends React.Component{
                     <div className="left">
                         <GridList cellHeight={350} cols={4} className={classes.gridListMain}>
                             {moviesData.map(movie => (
-                                <GridListTile className="released-movie-grid-item" key={"grid" + movie.id}>
+                                <GridListTile onClick={() => this.movieClickHandler(movie.id)} className="released-movie-grid-item" key={"grid" + movie.id}>
                                     <img src={movie.poster_url} className="movie-poster" alt={movie.title} />
                                     <GridListTileBar
                                         title={movie.title}
@@ -107,14 +107,14 @@ class Home extends React.Component{
                         </GridList>
                     </div>
                     <div className="right">
-                    <Card>
+                        <Card>
                             <CardContent>
                                 <FormControl className={classes.formControl}>
                                     <Typography className={classes.title} color="textSecondary">
                                         FIND MOVIES BY:
                                     </Typography>
-                                  </FormControl>
-                                    <FormControl className={classes.formControl}>
+                                </FormControl>
+                                <FormControl className={classes.formControl}>
                                     <InputLabel htmlFor="movieName">Movie Name</InputLabel>
                                     <Input id="movieName" onChange={this.movieNameChangeHandler} />
                                 </FormControl>
@@ -122,7 +122,7 @@ class Home extends React.Component{
                                     <InputLabel htmlFor="select-multiple-checkbox">Genres</InputLabel>
                                     <Select
                                         multiple
-                                        input={<Input id="select-multiple-checkbox" />}
+                                        input={<Input id="select-multiple-checkbox-genre" />}
                                         renderValue={selected => selected.join(',')}
                                         value={this.state.genres}
                                         onChange={this.genreSelectHandler}
@@ -146,7 +146,7 @@ class Home extends React.Component{
                                         onChange={this.artistSelectHandler}
                                     >
                                         <MenuItem value="0">None</MenuItem>
-                                        {artist.map(artist => (
+                                        {artists.map(artist => (
                                             <MenuItem key={artist.id} value={artist.first_name + " " + artist.last_name}>
                                                 <Checkbox checked={this.state.artists.indexOf(artist.first_name + " " + artist.last_name) > -1} />
                                                 <ListItemText primary={artist.first_name + " " + artist.last_name} />
@@ -182,9 +182,8 @@ class Home extends React.Component{
                         </Card>
                     </div>
                 </div>
-            </div>
+            </div >
         )
     }
 }
 export default withStyles(styles)(Home);
-
